@@ -1,0 +1,619 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Resume | ResumeAI</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            color: #f5f5ff;
+            background:
+                radial-gradient(ellipse at 15% 0%, #33215b 0%, transparent 38%),
+                radial-gradient(ellipse at 100% 70%, #142950 0%, transparent 35%),
+                #090b16;
+        }
+
+        .navbar {
+            padding: 19px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            background: #0d1020c9;
+            border-bottom: 1px solid #ffffff12;
+            backdrop-filter: blur(16px);
+        }
+
+        .brand {
+            color: #fff;
+            text-decoration: none;
+            font-size: 21px;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .brand span { color: #a99aff; }
+
+        .nav-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 9px;
+        }
+
+        .nav-links a {
+            color: #aeb5d0;
+            text-decoration: none;
+            font-size: 13px;
+            padding: 10px 13px;
+            border-radius: 10px;
+            transition: .2s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: white;
+            background: #9b87ff1b;
+        }
+
+        .page {
+            width: min(1120px, 92%);
+            margin: 42px auto 30px;
+        }
+
+        .hero {
+            position: relative;
+            overflow: hidden;
+            padding: 35px;
+            margin-bottom: 25px;
+            border-radius: 25px;
+            border: 1px solid #a99aff35;
+            background:
+                radial-gradient(circle at 90% 15%, #7958e52b, transparent 35%),
+                linear-gradient(135deg, #191d38, #101323);
+        }
+
+        .hero::after {
+            content: "✦";
+            position: absolute;
+            right: 7%;
+            top: 18%;
+            font-size: 85px;
+            color: #a99aff12;
+            pointer-events: none;
+        }
+
+        .eyebrow {
+            color: #b5a7ff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .hero h1 {
+            font-size: clamp(30px, 5vw, 45px);
+            line-height: 1.2;
+            letter-spacing: -1.5px;
+            margin: 17px 0 12px;
+        }
+
+        .gradient-text {
+            background: linear-gradient(90deg, #b7a8ff, #8ad8ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .hero p {
+            max-width: 650px;
+            color: #aab2cd;
+            font-size: 14px;
+            line-height: 1.9;
+        }
+
+        .workspace {
+            display: grid;
+            grid-template-columns: minmax(0, 1.65fr) minmax(240px, .85fr);
+            gap: 22px;
+            align-items: start;
+        }
+
+        .panel {
+            min-width: 0;
+            padding: 28px;
+            border-radius: 22px;
+            border: 1px solid #ffffff12;
+            background: linear-gradient(145deg, #171c32f5, #111526f5);
+            box-shadow: 0 20px 60px #00000020;
+        }
+
+        .panel h2 {
+            font-size: 21px;
+            letter-spacing: -.5px;
+            margin: 0 0 9px;
+        }
+
+        .subtext {
+            color: #969fbd;
+            font-size: 13px;
+            line-height: 1.8;
+            margin-bottom: 25px;
+        }
+
+        .dropzone {
+            display: block;
+            padding: 32px 18px;
+            text-align: center;
+            border: 1.5px dashed #8170d8;
+            border-radius: 18px;
+            background: linear-gradient(145deg, #1a2040, #17152e);
+            cursor: pointer;
+            transition: .25s;
+        }
+
+        .dropzone:hover,
+        .dropzone.dragover {
+            border-color: #c1b5ff;
+            background: linear-gradient(145deg, #24264b, #21183d);
+            box-shadow: 0 0 30px #8b76ff15;
+            transform: translateY(-2px);
+        }
+
+        .upload-icon {
+            width: 68px;
+            height: 68px;
+            display: grid;
+            place-items: center;
+            margin: 0 auto 18px;
+            border-radius: 21px;
+            background: linear-gradient(135deg, #9279ff, #5d50d9);
+            box-shadow: 0 9px 30px #8066ff35;
+            color: white;
+            font-size: 29px;
+        }
+
+        .dropzone h3 {
+            margin: 0 0 10px;
+            font-size: 16px;
+        }
+
+        .dropzone p {
+            color: #9da6c3;
+            font-size: 12px;
+            line-height: 1.8;
+        }
+
+        .choose-text {
+            display: inline-block;
+            color: #c2b5ff;
+            font-weight: 700;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .file-name {
+            margin-top: 14px;
+            color: #b8adff;
+            font-size: 12px;
+            overflow-wrap: anywhere;
+        }
+
+        .field { margin-top: 25px; }
+
+        .field label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #e9eaff;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 170px;
+            resize: vertical;
+            padding: 15px;
+            color: #f1f1ff;
+            background: #0d1122;
+            border: 1px solid #ffffff16;
+            border-radius: 13px;
+            outline: none;
+            font: inherit;
+            font-size: 13px;
+            line-height: 1.8;
+            transition: .2s;
+        }
+
+        textarea::placeholder { color: #68728f; }
+
+        textarea:focus {
+            border-color: #9b87ff;
+            box-shadow: 0 0 0 3px #9b87ff20;
+        }
+
+        .hint {
+            margin-top: 9px;
+            color: #8d97b5;
+            font-size: 11px;
+            line-height: 1.8;
+        }
+
+        .submit-btn {
+            width: 100%;
+            margin-top: 23px;
+            padding: 16px;
+            border: 0;
+            border-radius: 13px;
+            color: white;
+            font: inherit;
+            font-size: 14px;
+            font-weight: 700;
+            background: linear-gradient(100deg, #8f78ff, #6553e9);
+            box-shadow: 0 9px 26px #8066ff2c;
+            cursor: pointer;
+            transition: .25s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 13px 32px #8066ff40;
+        }
+
+        .submit-btn:disabled {
+            opacity: .65;
+            cursor: wait;
+            transform: none;
+        }
+
+        .side-card {
+            padding: 23px;
+            margin-bottom: 17px;
+            border: 1px solid #ffffff12;
+            border-radius: 19px;
+            background: linear-gradient(145deg, #171c32, #121629);
+        }
+
+        .side-card h3 {
+            font-size: 15px;
+            margin: 0 0 18px;
+        }
+
+        .tip-item {
+            display: flex;
+            gap: 11px;
+            align-items: flex-start;
+            margin: 15px 0;
+        }
+
+        .tip-icon {
+            flex: 0 0 27px;
+            height: 27px;
+            display: grid;
+            place-items: center;
+            border-radius: 9px;
+            background: #9b87ff1e;
+            color: #c4b7ff;
+            font-size: 13px;
+        }
+
+        .tip-item p {
+            margin: 2px 0 0;
+            color: #aab2cd;
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        .format-pill {
+            display: inline-block;
+            margin: 0 6px 10px 0;
+            padding: 8px 12px;
+            border: 1px solid #a99aff30;
+            border-radius: 9px;
+            background: #9b87ff12;
+            color: #c5baff;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .side-description {
+            color: #969fbd;
+            font-size: 12px;
+            line-height: 1.8;
+        }
+
+        .privacy-card {
+            border-color: #51d6a027;
+            background: linear-gradient(145deg, #112720, #121c28);
+        }
+
+        .privacy-card h3 { color: #a0f0c9; }
+
+        .privacy-card p {
+            color: #a6c6bc;
+            font-size: 12px;
+            line-height: 1.8;
+        }
+
+        .footer {
+            padding: 28px 12px;
+            text-align: center;
+            color: #727d9b;
+            font-size: 11px;
+        }
+
+        @media (max-width: 760px) {
+            .workspace { grid-template-columns: 1fr; }
+            .page { width: 94%; margin-top: 25px; }
+            .hero { padding: 25px 21px; }
+            .panel { padding: 21px; }
+            .navbar { padding: 17px 4%; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                transition: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar">
+    <a href="{{ url_for('dashboard') }}" class="brand">
+        Resume<span>AI.</span>
+    </a>
+
+    <div class="nav-links">
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('history') }}">History</a>
+        <a href="{{ url_for('logout') }}">Logout ↗</a>
+    </div>
+</nav>
+
+<main class="page">
+
+    <section class="hero">
+        <span class="eyebrow">✦ Step 01 · Career Intelligence</span>
+
+        <h1>
+            Turn your resume into<br>
+            <span class="gradient-text">your next opportunity.</span>
+        </h1>
+
+        <p>
+            Upload your resume and add the target job description.
+            Discover matching skills, identify gaps, and get useful
+            insights to help tailor your application.
+        </p>
+    </section>
+
+    <div class="workspace">
+
+        <section class="panel">
+            <h2>Let's get started <span style="color:#b5a7ff">✦</span></h2>
+
+            <p class="subtext">
+                Add your resume and the job requirements to generate
+                your personalized analysis report.
+            </p>
+
+            <form action="{{ url_for('upload') }}"
+                  method="POST"
+                  enctype="multipart/form-data"
+                  id="resumeForm">
+
+                <label class="dropzone" for="resume" id="dropzone">
+                    <div class="upload-icon">↑</div>
+
+                    <h3>Drop your resume here</h3>
+
+                    <p>
+                        Drag and drop your PDF, or
+                        <span class="choose-text">browse files</span>
+                    </p>
+
+                    <p>PDF document · Maximum 5 MB</p>
+
+                    <div class="file-name" id="fileName">
+                        No file selected yet
+                    </div>
+                </label>
+
+                <input
+                    class="file-input"
+                    type="file"
+                    id="resume"
+                    name="resume"
+                    accept=".pdf,application/pdf"
+                    required
+                >
+
+                <div class="field">
+                    <label for="job_description">
+                        ◈ &nbsp; Target Job Description
+                    </label>
+
+                    <textarea
+                        id="job_description"
+                        name="job_description"
+                        placeholder="Paste the job description here...
+
+Example:
+We are looking for a Python developer with knowledge of Python, Flask, SQL, HTML and CSS."
+                        required
+                    ></textarea>
+
+                    <p class="hint">
+                        TIP: Include required skills and job responsibilities
+                        for a more useful comparison.
+                    </p>
+                </div>
+
+                <button class="submit-btn" type="submit" id="submitBtn">
+                    ✦ &nbsp; Analyze My Resume &nbsp; →
+                </button>
+
+            </form>
+        </section>
+
+        <aside>
+
+            <section class="side-card">
+                <h3>✧ &nbsp; Get better results</h3>
+
+                <div class="tip-item">
+                    <span class="tip-icon">01</span>
+                    <p>Use a clear, text-based PDF resume.</p>
+                </div>
+
+                <div class="tip-item">
+                    <span class="tip-icon">02</span>
+                    <p>Include skills that genuinely reflect your abilities.</p>
+                </div>
+
+                <div class="tip-item">
+                    <span class="tip-icon">03</span>
+                    <p>Paste the job description you want to target.</p>
+                </div>
+
+                <div class="tip-item">
+                    <span class="tip-icon">04</span>
+                    <p>Review missing keywords and improve your resume honestly.</p>
+                </div>
+            </section>
+
+            <section class="side-card">
+                <h3>▧ &nbsp; File requirements</h3>
+
+                <span class="format-pill">PDF only</span>
+                <span class="format-pill">Max 5 MB</span>
+
+                <p class="side-description">
+                    This form accepts PDF files. Scanned PDFs may not
+                    work if your backend cannot extract their text.
+                </p>
+            </section>
+
+            <section class="side-card privacy-card">
+                <h3>♧ &nbsp; Privacy reminder</h3>
+
+                <p>
+                    Upload only documents you are comfortable processing.
+                    How your resume is stored or deleted depends on your
+                    Flask backend, so verify its handling before using
+                    real personal information.
+                </p>
+            </section>
+
+        </aside>
+
+    </div>
+
+</main>
+
+<footer class="footer">
+    ResumeAI · Intelligent Career Insights · Built with Python & Flask
+</footer>
+
+<script>
+    const resumeInput = document.getElementById("resume");
+    const fileName = document.getElementById("fileName");
+    const resumeForm = document.getElementById("resumeForm");
+    const submitBtn = document.getElementById("submitBtn");
+    const dropzone = document.getElementById("dropzone");
+
+    function showSelectedFile(file) {
+        if (!file) {
+            fileName.textContent = "No file selected yet";
+            return;
+        }
+
+        if (!file.name.toLowerCase().endsWith(".pdf") ||
+            (file.type && file.type !== "application/pdf")) {
+            fileName.textContent = "⚠ Please choose a PDF file.";
+            resumeInput.value = "";
+            return;
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+            fileName.textContent = "⚠ File exceeds the 5 MB limit.";
+            resumeInput.value = "";
+            return;
+        }
+
+        fileName.textContent = "✓ Selected: " + file.name;
+    }
+
+    resumeInput.addEventListener("change", function () {
+        showSelectedFile(this.files[0]);
+    });
+
+    ["dragenter", "dragover"].forEach(function (eventName) {
+        dropzone.addEventListener(eventName, function (event) {
+            event.preventDefault();
+            dropzone.classList.add("dragover");
+        });
+    });
+
+    ["dragleave", "drop"].forEach(function (eventName) {
+        dropzone.addEventListener(eventName, function (event) {
+            event.preventDefault();
+            dropzone.classList.remove("dragover");
+        });
+    });
+
+    dropzone.addEventListener("drop", function (event) {
+        const files = event.dataTransfer.files;
+
+        if (files.length > 0) {
+            try {
+                const transfer = new DataTransfer();
+                transfer.items.add(files[0]);
+                resumeInput.files = transfer.files;
+                showSelectedFile(files[0]);
+            } catch (error) {
+                fileName.textContent =
+                    "Please use Browse files to select your PDF.";
+            }
+        }
+    });
+
+    resumeForm.addEventListener("submit", function (event) {
+        const file = resumeInput.files[0];
+
+        if (!file ||
+            !file.name.toLowerCase().endsWith(".pdf") ||
+            file.size > 5 * 1024 * 1024) {
+            event.preventDefault();
+            fileName.textContent =
+                "⚠ Select a valid PDF under 5 MB.";
+            return;
+        }
+
+        if (!document.getElementById("job_description").value.trim()) {
+            event.preventDefault();
+            return;
+        }
+
+        submitBtn.textContent = "⏳ Analyzing your resume...";
+        submitBtn.disabled = true;
+    });
+</script>
+
+</body>
+</html>

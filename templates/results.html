@@ -1,0 +1,387 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis Results | AI Resume Analyzer</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #f8fafc;
+            min-height: 100vh;
+            padding: 30px 20px;
+            background:
+                radial-gradient(circle at top left, #312e81, transparent 40%),
+                radial-gradient(circle at bottom right, #581c87, transparent 40%),
+                #080d1b;
+        }
+
+        .container {
+            max-width: 1050px;
+            margin: auto;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 35px;
+        }
+
+        .logo {
+            font-size: 21px;
+            font-weight: 800;
+            color: #c4b5fd;
+        }
+
+        .nav-link {
+            color: #e2e8f0;
+            text-decoration: none;
+            padding: 10px 14px;
+            border: 1px solid rgba(255,255,255,0.18);
+            border-radius: 10px;
+            font-size: 13px;
+        }
+
+        .heading {
+            margin-bottom: 25px;
+        }
+
+        .heading h1 {
+            font-size: clamp(26px, 4vw, 36px);
+            margin-bottom: 10px;
+        }
+
+        .heading p {
+            color: #aab4cc;
+            line-height: 1.7;
+        }
+
+        .glass {
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.14);
+            border-radius: 22px;
+            padding: 28px;
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            box-shadow: 0 18px 45px rgba(0,0,0,0.18);
+        }
+
+        .score-layout {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            gap: 30px;
+            align-items: center;
+            margin-bottom: 22px;
+        }
+
+        .score-box {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .score-circle {
+            width: 165px;
+            height: 165px;
+            border-radius: 50%;
+            margin: 0 auto 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            border: 8px solid #8b5cf6;
+            background: rgba(124,58,237,0.13);
+            box-shadow: 0 0 35px rgba(139,92,246,0.18);
+        }
+
+        .score-number {
+            font-size: 42px;
+            font-weight: 800;
+        }
+
+        .score-label {
+            font-size: 12px;
+            color: #c4b5fd;
+        }
+
+        .score-info h2 {
+            font-size: 24px;
+            margin-bottom: 12px;
+        }
+
+        .score-info p {
+            color: #b8c1d5;
+            line-height: 1.8;
+            font-size: 14px;
+        }
+
+        .section-title {
+            font-size: 19px;
+            margin-bottom: 18px;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 22px;
+            margin-bottom: 22px;
+        }
+
+        .skill-list {
+            list-style: none;
+        }
+
+        .skill-list li {
+            padding: 12px 14px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            font-size: 13px;
+            overflow-wrap: anywhere;
+        }
+
+        .matched li {
+            background: rgba(34,197,94,0.10);
+            border: 1px solid rgba(74,222,128,0.20);
+            color: #bbf7d0;
+        }
+
+        .missing li {
+            background: rgba(248,113,113,0.10);
+            border: 1px solid rgba(248,113,113,0.20);
+            color: #fecaca;
+        }
+
+        .suggestion {
+            padding: 15px;
+            margin-bottom: 12px;
+            border-radius: 12px;
+            background: rgba(139,92,246,0.10);
+            border: 1px solid rgba(167,139,250,0.17);
+            color: #ddd6fe;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 13px 18px;
+            border-radius: 11px;
+            text-decoration: none;
+            color: white;
+            font-size: 13px;
+            font-weight: 700;
+            background: linear-gradient(100deg, #7c3aed, #4f46e5);
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.18);
+        }
+
+        .empty {
+            color: #aab4cc;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        @media (max-width: 680px) {
+            body {
+                padding: 20px 13px;
+            }
+
+            .score-layout,
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .glass {
+                padding: 20px;
+            }
+
+            .score-info {
+                text-align: center;
+            }
+
+            .navbar {
+                align-items: flex-start;
+            }
+        }
+
+        @media print {
+            body {
+                color: #111827;
+                background: white;
+            }
+
+            .glass {
+                background: white;
+                border: 1px solid #ddd;
+                box-shadow: none;
+                color: #111827;
+            }
+
+            .score-info p,
+            .empty {
+                color: #374151;
+            }
+
+            .actions, .navbar {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <nav class="navbar">
+        <div class="logo">✦ AI Resume Analyzer</div>
+        <a class="nav-link" href="{{ url_for('dashboard') }}">
+            ← Dashboard
+        </a>
+    </nav>
+
+    <header class="heading">
+        <h1>Resume Analysis Results</h1>
+        <p>Your resume analysis is ready. Review your job compatibility below.</p>
+    </header>
+
+    {% set score = match_score | default(0, true) | float %}
+
+    <section class="glass score-layout">
+        <div class="score-box">
+            <div class="score-circle">
+                <div class="score-number">{{ score | round | int }}%</div>
+                <div class="score-label">MATCH SCORE</div>
+            </div>
+            <p class="empty">Resume compatibility</p>
+        </div>
+
+        <div class="score-info">
+            <h2>
+                {% if score >= 80 %}
+                    Excellent Match! 🎉
+                {% elif score >= 60 %}
+                    Good Progress! 🚀
+                {% elif score >= 40 %}
+                    Room to Improve 💡
+                {% else %}
+                    Let's Improve Your Resume ✨
+                {% endif %}
+            </h2>
+
+            <p>
+                {% if score >= 80 %}
+                    Your resume appears to match many of the job requirements.
+                    Prepare for interviews and verify your experience is clearly presented.
+                {% elif score >= 60 %}
+                    Your resume has a promising match. Review the missing skills
+                    and tailor your experience to the job description.
+                {% else %}
+                    Review the required skills below and improve your resume
+                    with relevant, truthful experience and projects.
+                {% endif %}
+            </p>
+
+            {% if job_title is defined and job_title %}
+                <p style="margin-top:12px">
+                    <strong>Target role:</strong> {{ job_title }}
+                </p>
+            {% endif %}
+        </div>
+    </section>
+
+    <section class="skills-grid">
+        <div class="glass">
+            <h2 class="section-title">✓ Matched Skills</h2>
+
+            {% if matched_skills is defined and matched_skills %}
+                <ul class="skill-list matched">
+                    {% for skill in matched_skills %}
+                        <li>✓ {{ skill }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="empty">No matched skills were provided by the analysis.</p>
+            {% endif %}
+        </div>
+
+        <div class="glass">
+            <h2 class="section-title">＋ Skills to Improve</h2>
+
+            {% if missing_skills is defined and missing_skills %}
+                <ul class="skill-list missing">
+                    {% for skill in missing_skills %}
+                        <li>＋ {{ skill }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="empty">
+                    No missing skills were provided. Check the job requirements
+                    to identify additional skills to develop.
+                </p>
+            {% endif %}
+        </div>
+    </section>
+
+    <section class="glass">
+        <h2 class="section-title">💡 Improvement Suggestions</h2>
+
+        {% if suggestions is defined and suggestions %}
+            {% for suggestion in suggestions %}
+                <div class="suggestion">
+                    {{ suggestion }}
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="suggestion">
+                <strong>1.</strong> Include relevant skills that you genuinely possess.
+            </div>
+            <div class="suggestion">
+                <strong>2.</strong> Add projects and measurable achievements.
+            </div>
+            <div class="suggestion">
+                <strong>3.</strong> Use clear headings and tailor your resume
+                to the job description.
+            </div>
+        {% endif %}
+
+        <div class="actions">
+            <a href="{{ url_for('upload') }}" class="btn">
+                Analyze Another Resume
+            </a>
+
+            <a href="{{ url_for('history') }}" class="btn btn-secondary">
+                View History
+            </a>
+
+            <button onclick="window.print()" class="btn btn-secondary">
+                Print Results
+            </button>
+        </div>
+    </section>
+
+</div>
+</body>
+</html>

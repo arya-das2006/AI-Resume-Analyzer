@@ -1,0 +1,386 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Analysis History | ResumeAI</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        .history-page {
+            width: min(1100px, 92%);
+            margin: 35px auto 60px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 45px;
+        }
+
+        .brand {
+            font-size: 23px;
+            font-weight: 800;
+            color: white;
+        }
+
+        .brand span {
+            color: #a99aff;
+        }
+
+        .eyebrow {
+            color: #a99aff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .page-heading {
+            margin-bottom: 28px;
+        }
+
+        .page-heading h1 {
+            font-size: clamp(30px, 5vw, 44px);
+            margin: 12px 0;
+        }
+
+        .history-overview {
+            padding: 28px;
+            border: 1px solid #a99aff35;
+            border-radius: 22px;
+            background:
+                radial-gradient(circle at 90% 10%,
+                    #7159cf30, transparent 35%),
+                linear-gradient(135deg, #191d38, #101323);
+            margin-bottom: 32px;
+        }
+
+        .overview-label {
+            color: #aeb5d0;
+            font-size: 14px;
+        }
+
+        .overview-number {
+            display: block;
+            font-size: 38px;
+            font-weight: 800;
+            margin: 10px 0;
+        }
+
+        .history-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .history-toolbar h2 {
+            margin: 0;
+        }
+
+        .search-box {
+            width: min(300px, 100%);
+            margin: 0;
+            background: #12172a;
+        }
+
+        .history-list {
+            display: grid;
+            gap: 16px;
+        }
+
+        .history-item {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: center;
+            gap: 18px;
+            padding: 23px;
+            border: 1px solid rgba(255,255,255,.09);
+            border-radius: 19px;
+            background: linear-gradient(135deg, #171c32, #111526);
+            transition: transform .25s, border-color .25s;
+        }
+
+        .history-item:hover {
+            transform: translateY(-3px);
+            border-color: #a99aff70;
+        }
+
+        .item-title {
+            margin: 0 0 9px;
+            font-size: 18px;
+            overflow-wrap: anywhere;
+        }
+
+        .item-date {
+            color: #9ba3bd;
+            font-size: 13px;
+            overflow-wrap: anywhere;
+        }
+
+        .score-column {
+            text-align: right;
+        }
+
+        .score-badge {
+            display: inline-block;
+            min-width: 90px;
+            padding: 10px 14px;
+            border: 1px solid #a99aff40;
+            border-radius: 12px;
+            color: #c7bbff;
+            background: #8b76ff18;
+            font-weight: 800;
+            text-align: center;
+        }
+
+        .score-caption {
+            display: block;
+            margin-top: 7px;
+            color: #9ba3bd;
+            font-size: 11px;
+            letter-spacing: 1px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 55px 22px;
+            border: 1px dashed #444969;
+            border-radius: 22px;
+            background: #13172a99;
+        }
+
+        .empty-icon {
+            font-size: 42px;
+            margin-bottom: 15px;
+        }
+
+        .empty-state h3 {
+            font-size: 22px;
+        }
+
+        .empty-state p {
+            max-width: 420px;
+            margin: 10px auto 22px;
+        }
+
+        .history-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .secondary-btn {
+            background: #1a2038;
+            border-color: rgba(255,255,255,.12);
+        }
+
+        .footer {
+            text-align: center;
+            color: #8189a6;
+            padding: 25px 10px;
+            font-size: 12px;
+        }
+
+        .no-results {
+            display: none;
+            padding: 25px;
+            text-align: center;
+            color: #aeb5d0;
+            border: 1px solid rgba(255,255,255,.08);
+            border-radius: 15px;
+        }
+
+        @media (max-width: 600px) {
+            .topbar {
+                align-items: flex-start;
+                flex-direction: column;
+                margin-bottom: 32px;
+            }
+
+            .history-toolbar {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+
+            .history-item {
+                grid-template-columns: 1fr;
+                padding: 19px;
+            }
+
+            .score-column {
+                text-align: left;
+            }
+
+            .history-overview {
+                padding: 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<main class="history-page">
+
+    <nav class="topbar">
+        <a href="{{ url_for('dashboard') }}" class="brand">
+            Resume<span>AI.</span>
+        </a>
+
+        <span class="badge">✦ CAREER ANALYTICS</span>
+    </nav>
+
+    <section class="page-heading">
+        <span class="eyebrow">Your personal workspace</span>
+        <h1>Analysis History<span style="color:#a99aff">.</span></h1>
+        <p>Every analysis, one place. Track your resume improvements over time.</p>
+    </section>
+
+    <section class="history-overview">
+        <span class="overview-label">Total saved analyses</span>
+
+        <span class="overview-number">
+            {{ results | length }}
+        </span>
+
+        <p style="margin-bottom:0">
+            Your previous resume analysis records.
+        </p>
+    </section>
+
+    <section>
+        <div class="history-toolbar">
+            <div>
+                <h2>Previous Results</h2>
+                <p style="margin:7px 0 0">Browse your saved reports.</p>
+            </div>
+
+            {% if results %}
+            <input
+                type="search"
+                id="historySearch"
+                class="search-box"
+                placeholder="⌕ Search job title..."
+                aria-label="Search analysis history">
+            {% endif %}
+        </div>
+
+        {% if results %}
+
+            <div class="history-list" id="historyList">
+
+                {% for result in results %}
+
+                <article class="history-item">
+
+                    <div>
+                        <h3 class="item-title">
+                            {{ result['job_title'] or 'Untitled Analysis' }}
+                        </h3>
+
+                        <div class="item-date">
+                            ◷ &nbsp; {{ result['created_at'] }}
+                        </div>
+                    </div>
+
+                    <div class="score-column">
+                        <span class="score-badge">
+                            {{ result['match_score'] }}%
+                        </span>
+
+                        <span class="score-caption">
+                            MATCH SCORE
+                        </span>
+                    </div>
+
+                </article>
+
+                {% endfor %}
+
+            </div>
+
+            <div class="no-results" id="noResults">
+                No matching job titles found. Try another search.
+            </div>
+
+        {% else %}
+
+            <div class="empty-state">
+                <div class="empty-icon">✧</div>
+
+                <h3>Your journey starts here</h3>
+
+                <p>
+                    You haven't saved any resume analyses yet.
+                    Analyze your first resume to see your results here.
+                </p>
+
+                <a href="{{ url_for('upload') }}" class="btn">
+                    + Analyze Your Resume
+                </a>
+            </div>
+
+        {% endif %}
+
+    </section>
+
+    <div class="history-actions">
+        <a href="{{ url_for('upload') }}" class="btn">
+            + New Analysis
+        </a>
+
+        <a href="{{ url_for('dashboard') }}"
+           class="btn secondary-btn">
+            ← Dashboard
+        </a>
+    </div>
+
+</main>
+
+<footer class="footer">
+    ResumeAI · Intelligent Career Insights · BCA Project
+</footer>
+
+<script>
+    const searchInput = document.getElementById('historySearch');
+    const historyList = document.getElementById('historyList');
+    const noResults = document.getElementById('noResults');
+
+    if (searchInput && historyList && noResults) {
+        searchInput.addEventListener('input', function () {
+            const query = this.value.toLowerCase().trim();
+            const items = historyList.querySelectorAll('.history-item');
+            let visibleCount = 0;
+
+            items.forEach(function (item) {
+                const title = item.querySelector('.item-title')
+                    .textContent.toLowerCase();
+
+                const matches = title.includes(query);
+                item.style.display = matches ? 'grid' : 'none';
+
+                if (matches) visibleCount++;
+            });
+
+            noResults.style.display =
+                visibleCount === 0 ? 'block' : 'none';
+        });
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,249 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | AI Resume Analyzer</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: white;
+            background:
+                radial-gradient(circle at top left, #4338ca 0, transparent 40%),
+                radial-gradient(circle at bottom right, #7e22ce 0, transparent 40%),
+                #080d1b;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 440px;
+            padding: 38px;
+            border: 1px solid rgba(255,255,255,0.18);
+            border-radius: 25px;
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
+            box-shadow: 0 25px 70px rgba(0,0,0,0.4);
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+            border-radius: 18px;
+            font-size: 30px;
+            background: linear-gradient(135deg, #8b5cf6, #4f46e5);
+            box-shadow: 0 8px 25px rgba(124,58,237,0.4);
+        }
+
+        h1 {
+            font-size: 29px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #b9bfd3;
+            font-size: 14px;
+            line-height: 1.7;
+            margin-bottom: 28px;
+        }
+
+        .field {
+            margin-bottom: 19px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 9px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 15px;
+            color: white;
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 12px;
+            background: rgba(15,23,42,0.65);
+            transition: 0.25s;
+        }
+
+        input::placeholder {
+            color: #818ba5;
+        }
+
+        input:focus {
+            border-color: #a78bfa;
+            box-shadow: 0 0 0 3px rgba(139,92,246,0.16);
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 15px;
+            margin-top: 8px;
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 15px;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            background: linear-gradient(100deg, #7c3aed, #4f46e5);
+            box-shadow: 0 8px 22px rgba(79,70,229,0.3);
+            transition: transform 0.2s, opacity 0.2s;
+        }
+
+        .login-button:hover {
+            transform: translateY(-2px);
+            opacity: 0.95;
+        }
+
+        .login-button:active {
+            transform: scale(0.99);
+        }
+
+        .message {
+            padding: 12px;
+            margin-bottom: 18px;
+            border-radius: 10px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .error {
+            background: rgba(239,68,68,0.15);
+            border: 1px solid rgba(248,113,113,0.4);
+            color: #fecaca;
+        }
+
+        .success {
+            background: rgba(34,197,94,0.15);
+            border: 1px solid rgba(74,222,128,0.4);
+            color: #bbf7d0;
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 25px;
+            color: #b9bfd3;
+            font-size: 13px;
+        }
+
+        .register-link a {
+            color: #c4b5fd;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #929bb4;
+            font-size: 12px;
+            text-decoration: none;
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 26px 22px;
+            }
+
+            h1 {
+                font-size: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="login-container">
+
+        <div class="logo">✦</div>
+
+        <h1>Welcome back</h1>
+
+        <p class="subtitle">
+            Sign in to your AI Resume Analyzer account
+            and continue your career journey.
+        </p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <div class="message {{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('login') }}">
+
+            <div class="field">
+                <label for="email">Email address</label>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="you@example.com"
+                    autocomplete="email"
+                    required
+                >
+            </div>
+
+            <div class="field">
+                <label for="password">Password</label>
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Enter your password"
+                    autocomplete="current-password"
+                    required
+                >
+            </div>
+
+            <button type="submit" class="login-button">
+                Log In →
+            </button>
+
+        </form>
+
+        <div class="register-link">
+            Don't have an account?
+            <a href="{{ url_for('register') }}">Create account</a>
+        </div>
+
+        <a href="{{ url_for('home') }}" class="back-link">
+            ← Back to Home
+        </a>
+
+    </main>
+</body>
+</html>

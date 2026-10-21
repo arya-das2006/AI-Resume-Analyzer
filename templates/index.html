@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Resume Analyzer | Build Your Career</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --navy: #142344;
+            --blue: #2563eb;
+            --purple: #7c3aed;
+            --muted: #64748b;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            color: #172554;
+            background: #f8faff;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        /* Navigation */
+        .navbar {
+            min-height: 82px;
+            padding: 18px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            background: #ffffffed;
+            border-bottom: 1px solid #e9edf7;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            backdrop-filter: blur(12px);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            color: var(--navy);
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .logo-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 13px;
+            display: grid;
+            place-items: center;
+            color: white;
+            font-size: 23px;
+            background: linear-gradient(135deg, #3b82f6, #7c3aed);
+            box-shadow: 0 7px 16px #7c3aed30;
+        }
+
+        .logo span {
+            color: #6d5ce7;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 27px;
+        }
+
+        .nav-links a {
+            font-size: 13px;
+            color: #475569;
+            font-weight: 600;
+        }
+
+        .nav-links a:hover {
+            color: var(--blue);
+        }
+
+        .nav-buttons {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            padding: 13px 21px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            transition: 0.25s;
+        }
+
+        .btn-outline {
+            border: 1px solid #dbe3f3;
+            color: var(--navy);
+            background: white;
+        }
+
+        .btn-primary {
+            color: white;
+            background: linear-gradient(100deg, #2563eb, #7c3aed);
+            box-shadow: 0 8px 20px #4f46e52b;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px #4f46e525;
+        }
+
+        /* Hero */
+        .hero {
+            position: relative;
+            overflow: hidden;
+            padding: 90px 7% 85px;
+            background:
+                radial-gradient(circle at 85% 15%, #e9ddff 0, transparent 32%),
+                radial-gradient(circle at 15% 80%, #d9f0ff 0, transparent 34%),
+                linear-gradient(135deg, #f8fbff, #f0f2ff);
+        }
+
+        .hero-inner {
+            max-width: 1200px;
+            margin: auto;
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr;
+            align-items: center;
+            gap: 55px;
+        }
+
+        .eyebrow {
+            display: inline-block;
+            padding: 9px 14px;
+            background: #e7eaff;
+            border: 1px solid #d9ddff;
+            border-radius: 30px;
+            color: #5145cd;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            margin-bottom: 23px;
+        }
+
+        .hero h1 {
+            font-size: clamp(38px, 5vw, 61px);
+            line-height: 1.12;
+            letter-spacing: -2.5px;
+            margin-bottom: 22px;
+            color: #142344;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(90deg, #2563eb, #9333ea);
+            color: transparent;
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+
+        .hero-description {
+            font-size: 15px;
+            line-height: 1.9;
+            color: #64748b;
+            max-width: 570px;
+            margin-bottom: 28px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 13px;
+        }
+
+        .hero-buttons .btn {
+            padding: 16px 23px;
+        }
+
+        .trust-note {
+            margin-top: 25px;
+            color: #64748b;
+            font-size: 11px;
+            line-height: 1.8;
+        }
+
+        .trust-note span {
+            color: #059669;
+            font-weight: 700;
+        }
+
+        /* Hero illustration */
+        .visual {
+            position: relative;
+            padding: 28px;
+        }
+
+        .visual-glow {
+            position: absolute;
+            inset: 0;
+            border-radius: 40px;
+            background: linear-gradient(140deg, #c8e9ff, #e8d9ff);
+            transform: rotate(-5deg);
+        }
+
+        .resume-card {
+            position: relative;
+            z-index: 1;
+            background: #ffffffed;
+            border: 1px solid #ffffff;
+            border-radius: 24px;
+            padding: 28px;
+            box-shadow: 0 25px 65px #273c7820;
+            transform: rotate(2deg);
+        }
+
+        .resume-heading {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            margin-bottom: 24px;
+        }
+
+        .resume-avatar {
+            height: 50px;
+            width: 50px;
+            display: grid;
+            place-items: center;
+            border-radius: 15px;
+            color: white;
+            background: linear-gradient(135deg, #3b82f6, #7c3aed);
+            font-size: 22px;
+        }
+
+        .resume-heading h3 {
+            font-size: 15px;
+            margin-bottom: 7px;
+        }
+
+        .resume-heading p {
+            color: #94a3b8;
+            font-size: 11px;
+        }
+
+        .line {
+            height: 9px;
+            border-radius: 10px;
+            background: #e6eaf6;
+            margin: 12px 0;
+        }
+
+        .line.short {
+            width: 58%;
+        }
+
+        .line.medium {
+            width: 80%;
+        }
+
+        .line.purple {
+            background: #ded6ff;
+        }
+
+        .analysis-result {
+            margin-top: 24px;
+            padding: 17px;
+            border-radius: 15px;
+            background: linear-gradient(110deg, #eef6ff, #f5efff);
+            border: 1px solid #e5e7ff;
+        }
+
+        .result-top {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .score {
+            color: #6d28d9;
+            font-size: 24px;
+            font-weight: 800;
+        }
+
+        .progress {
+            height: 8px;
+            background: #dddff2;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 75%;
+            background: linear-gradient(90deg, #2563eb, #9333ea);
+            border-radius: 20px;
+        }
+
+        .floating-tag {
+            position: absolute;
+            right: -12px;
+            top: 5px;
+            z-index: 2;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 13px 16px;
+            box-shadow: 0 10px 25px #273c781a;
+            color: #047857;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .floating-tag.bottom {
+            top: auto;
+            right: auto;
+            left: -5px;
+            bottom: 30px;
+            color: #6d28d9;
+        }
+
+        /* Features */
+        .features-section {
+            padding: 78px 7%;
+            max-width: 1400px;
+            margin: auto;
+        }
+
+        .section-title {
+            text-align: center;
+            max-width: 650px;
+            margin: 0 auto 42px;
+        }
+
+        .section-title .eyebrow {
+            margin-bottom: 15px;
+        }
+
+        .section-title h2 {
+            font-size: clamp(27px, 3vw, 37px);
+            letter-spacing: -1.2px;
+            margin-bottom: 14px;
+        }
+
+        .section-title p {
+            color: #64748b;
+            font-size: 13px;
+            line-height: 1.9;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 22px;
+        }
+
+        .feature-card {
+            padding: 28px;
+            background: white;
+            border: 1px solid #e5eaf5;
+            border-radius: 19px;
+            transition: 0.25s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 18px 35px #273c7810;
+        }
+
+        .feature-icon {
+            width: 52px;
+            height: 52px;
+            display: grid;
+            place-items: center;
+            border-radius: 15px;
+            background: #eaf0ff;
+            font-size: 24px;
+            margin-bottom: 21px;
+        }
+
+        .feature-card:nth-child(2) .feature-icon {
+            background: #f1eaff;
+        }
+
+        .feature-card:nth-child(3) .feature-icon {
+            background: #e3fbf2;
+        }
+
+        .feature-card h3 {
+            font-size: 17px;
+            margin-bottom: 12px;
+        }
+
+        .feature-card p {
+            color: #64748b;
+            font-size: 12px;
+            line-height: 1.9;
+        }
+
+        /* Call to action */
+        .cta {
+            margin: 0 7% 75px;
+            padding: 43px 35px;
+            text-align: center;
+            border-radius: 24px;
+            background: linear-gradient(110deg, #172b52, #37308a 65%, #6d28d9);
+            color: white;
+        }
+
+        .cta h2 {
+            font-size: clamp(24px, 3vw, 34px);
+            margin-bottom: 13px;
+        }
+
+        .cta p {
+            color: #dbeafe;
+            font-size: 13px;
+            line-height: 1.8;
+            margin-bottom: 23px;
+        }
+
+        .cta .btn {
+            background: white;
+            color: #3730a3;
+        }
+
+        footer {
+            padding: 26px 7%;
+            background: white;
+            border-top: 1px solid #e5eaf5;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            color: #64748b;
+            font-size: 11px;
+        }
+
+        footer strong {
+            color: #172554;
+        }
+
+        @media (max-width: 900px) {
+            .hero-inner {
+                grid-template-columns: 1fr;
+                gap: 35px;
+            }
+
+            .visual {
+                max-width: 500px;
+                width: 100%;
+                margin: auto;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hero {
+                padding-top: 60px;
+            }
+        }
+
+        @media (max-width: 520px) {
+            .navbar {
+                padding: 15px 5%;
+            }
+
+            .logo {
+                font-size: 14px;
+            }
+
+            .logo-icon {
+                width: 38px;
+                height: 38px;
+            }
+
+            .nav-buttons {
+                gap: 6px;
+            }
+
+            .nav-buttons .btn {
+                padding: 10px;
+                font-size: 11px;
+            }
+
+            .hero {
+                padding: 50px 6%;
+            }
+
+            .hero h1 {
+                letter-spacing: -1.5px;
+            }
+
+            .hero-buttons .btn {
+                width: 100%;
+            }
+
+            .visual {
+                padding: 15px;
+            }
+
+            .resume-card {
+                padding: 20px;
+            }
+
+            .floating-tag {
+                right: -3px;
+            }
+
+            .features-section {
+                padding: 55px 6%;
+            }
+
+            .cta {
+                margin: 0 5% 45px;
+                padding: 35px 20px;
+            }
+
+            footer {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+
+        <a class="logo" href="{{ url_for('home') }}">
+            <div class="logo-icon">📄</div>
+            <div>AI Resume <span>Analyzer</span></div>
+        </a>
+
+        <div class="nav-links">
+            <a href="#home">Home</a>
+            <a href="#features">Features</a>
+            <a href="#how-it-works">How It Works</a>
+        </div>
+
+        <div class="nav-buttons">
+            <a class="btn btn-outline" href="{{ url_for('login') }}">Log In</a>
+            <a class="btn btn-primary" href="{{ url_for('register') }}">Get Started →</a>
+        </div>
+
+    </nav>
+
+    <main>
+
+        <section class="hero" id="home">
+
+            <div class="hero-inner">
+
+                <div>
+                    <div class="eyebrow">✦ YOUR CAREER, YOUR NEXT CHAPTER</div>
+
+                    <h1>
+                        Your Resume.<br>
+                        Your <span>Future.</span>
+                    </h1>
+
+                    <p class="hero-description">
+                        Make your next career move with confidence.
+                        Compare your resume against a job description,
+                        identify matching skills, and discover areas
+                        to improve before you apply.
+                    </p>
+
+                    <div class="hero-buttons">
+                        <a class="btn btn-primary" href="{{ url_for('register') }}">
+                            Start Analyzing Free →
+                        </a>
+
+                        <a class="btn btn-outline" href="#features">
+                            Explore Features ↓
+                        </a>
+                    </div>
+
+                    <p class="trust-note">
+                        <span>✓</span> Simple to use &nbsp;
+                        <span>✓</span> PDF resume support &nbsp;
+                        <span>✓</span> Instant keyword comparison
+                    </p>
+                </div>
+
+                <div class="visual">
+
+                    <div class="visual-glow"></div>
+
+                    <div class="floating-tag">✓ Skills compared</div>
+
+                    <div class="resume-card">
+
+                        <div class="resume-heading">
+                            <div class="resume-avatar">✦</div>
+
+                            <div>
+                                <h3>Resume Overview</h3>
+                                <p>Your next opportunity starts here</p>
+                            </div>
+                        </div>
+
+                        <div class="line medium purple"></div>
+                        <div class="line short"></div>
+
+                        <div class="line"></div>
+                        <div class="line medium"></div>
+                        <div class="line short purple"></div>
+
+                        <div class="line"></div>
+                        <div class="line medium"></div>
+
+                        <div class="analysis-result">
+
+                            <div class="result-top">
+                                <span>Skill Match Preview</span>
+                                <span class="score">75%</span>
+                            </div>
+
+                            <div class="progress">
+                                <div class="progress-fill"></div>
+                            </div>
+
+                            <p style="font-size:11px;color:#64748b;margin-top:12px;line-height:1.7">
+                                Example illustration only. Your actual score
+                                depends on your resume and job description.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="floating-tag bottom">✦ Career insights</div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="features-section" id="features">
+
+            <div class="section-title">
+                <div class="eyebrow">BUILT FOR YOUR NEXT MOVE</div>
+
+                <h2>A Smarter Way to Prepare Your Resume</h2>
+
+                <p>
+                    Understand how your skills compare with a job's
+                    requirements and plan your next steps with clarity.
+                </p>
+            </div>
+
+            <div class="feature-grid">
+
+                <article class="feature-card">
+                    <div class="feature-icon">📄</div>
+
+                    <h3>Resume Analysis</h3>
+
+                    <p>
+                        Upload your PDF resume and compare detected
+                        skills with those mentioned in your target
+                        job description.
+                    </p>
+                </article>
+
+                <article class="feature-card">
+                    <div class="feature-icon">🎯</div>
+
+                    <h3>Skill Gap Insights</h3>
+
+                    <p>
+                        See which supported skills appear in your
+                        resume and identify relevant skills that
+                        may need further development.
+                    </p>
+                </article>
+
+                <article class="feature-card">
+                    <div class="feature-icon">📊</div>
+
+                    <h3>Analysis History</h3>
+
+                    <p>
+                        Review saved analysis scores and revisit
+                        earlier results as you prepare for
+                        different job opportunities.
+                    </p>
+                </article>
+
+            </div>
+
+        </section>
+
+        <section class="cta" id="how-it-works">
+
+            <h2>Your Next Opportunity Starts Here</h2>
+
+            <p>
+                Create your account, upload your resume, and compare
+                it with the job you want.
+            </p>
+
+            <a class="btn" href="{{ url_for('register') }}">
+                Create Your Free Account →
+            </a>
+
+        </section>
+
+    </main>
+
+    <footer>
+        <div><strong>AI Resume Analyzer</strong> · Your career toolkit</div>
+        <div>Built with Python and Flask · BCA Project 2026</div>
+    </footer>
+
+</body>
+</html>
+
